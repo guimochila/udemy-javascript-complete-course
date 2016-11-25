@@ -78,7 +78,7 @@ var UIController = (function () {
             return {
                 type: DOMStrings.$inputType.value, // inc or exp
                 description: DOMStrings.$inputDescription.value,
-                value: DOMStrings.$inputValue.value
+                value: parseFloat(DOMStrings.$inputValue.value)
             }
         },
 
@@ -107,10 +107,10 @@ var UIController = (function () {
         clearFields: function () {
             var fields, fieldsArr;
 
-            fields = document.querySelectorAll('.add__description'+ ', ' + '.add__value');
+            fields = document.querySelectorAll('.add__description' + ', ' + '.add__value');
 
             fieldsArr = Array.prototype.slice.call(fields);
-            fieldsArr.forEach(function(element, index, arr) {
+            fieldsArr.forEach(function (element, index, arr) {
                 element.value = "";
             }, this);
 
@@ -141,22 +141,34 @@ var controller = (function (budgetCtrl, UICtrl) {
         });
     };
 
+    var updateBudget = function () {
+        // 1. Calculate the budget
+
+        // 2. Return budget
+
+        // 3. Display the budget on the UI
+
+    };
+
     var ctrlAddItem = function () {
         var input, newItem;
         // 1. Get input field data
         input = UICtrl.getinput();
 
-        // 2. Add item to budget controller
-        newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+        if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
+            // 2. Add item to budget controller
+            newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
-        // 3. Add the item to UI
-        UICtrl.addListItem(newItem, input.type);
+            // 3. Add the item to UI
+            UICtrl.addListItem(newItem, input.type);
 
-        // 4. Clear fields
-        UICtrl.clearFields();
-        // 5. Calculate the budget
+            // 4. Clear fields
+            UICtrl.clearFields();
 
-        // 6. Display the budget on the UI
+            // 5. Calculate and update budget
+            updateBudget();
+        }
+
     };
 
     return {
