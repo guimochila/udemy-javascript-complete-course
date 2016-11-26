@@ -66,16 +66,16 @@ var budgetController = (function () {
             return newItem;
         },
 
-        deleteItem: function(type, id) {
+        deleteItem: function (type, id) {
             var ids, index;
 
-            ids = data.allItems[type].map(function (current){
+            ids = data.allItems[type].map(function (current) {
                 return current.id;
             });
 
             index = ids.indexOf(id);
 
-            if ( index !== -1) {
+            if (index !== -1) {
                 data.allItems[type].splice(index, 1);
             }
 
@@ -159,6 +159,13 @@ var UIController = (function () {
 
         },
 
+        deleteListItem: function (selectorID) {
+
+            var el = document.getElementById(selectorID);
+            el.parentNode.removeChild(el);
+
+        },
+
         clearFields: function () {
             var fields, fieldsArr;
 
@@ -172,15 +179,15 @@ var UIController = (function () {
             fieldsArr[0].focus();
         },
 
-        displayBudget: function(obj) {
+        displayBudget: function (obj) {
             DOMStrings.$budgetLabel.textContent = obj.budget;
-            DOMStrings.$incomeLabel.textContent = obj.totalInc;  
-            DOMStrings.$expenseLabel.textContent = obj.totalExp;  
+            DOMStrings.$incomeLabel.textContent = obj.totalInc;
+            DOMStrings.$expenseLabel.textContent = obj.totalExp;
 
-            if (obj.percentage > 0 ){
-                DOMStrings.$percentageLabel.textContent = obj.percentage + '%';  
+            if (obj.percentage > 0) {
+                DOMStrings.$percentageLabel.textContent = obj.percentage + '%';
             } else {
-                DOMStrings.$percentageLabel.textContent = '---';  
+                DOMStrings.$percentageLabel.textContent = '---';
             }
         },
 
@@ -239,9 +246,9 @@ var controller = (function (budgetCtrl, UICtrl) {
 
     };
 
-    var crtlDeleteItem = function(event) {
-        var itemID, splitID, type, ID; 
-    
+    var crtlDeleteItem = function (event) {
+        var itemID, splitID, type, ID;
+
         itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
 
         if (itemID) {
@@ -254,8 +261,10 @@ var controller = (function (budgetCtrl, UICtrl) {
             // 1. Delete the item from the data structure
             budgetCtrl.deleteItem(type, ID);
             // 2. Delete the item form the UI
+            UICtrl.deleteListItem(itemID);
 
             // 3. Update and show the new budget
+            updateBudget();
         }
     };
 
