@@ -154,6 +154,12 @@ var UIController = (function () {
         $container: document.querySelector('.container'),
     };
 
+   function nodeListForEach (list, callback) {
+                for (var i = 0; i < list.length; i++) {
+                    callback(list[i], i);
+                }
+            };
+
     function formatNumber(num, type) {
         var numSplit, int, dec;
 
@@ -268,6 +274,16 @@ var UIController = (function () {
             document.querySelector('.budget__title--month').textContent = months[month] + ' ' + year;
         },
 
+        changedType: function () {
+            var fields = document.querySelectorAll('.add__type , .add__description, .add__value');
+
+            nodeListForEach(fields, function (item) {
+                item.classList.toggle('red-focus');
+            });
+
+            DOMStrings.$inputBtn.classList.toggle('red');
+        },
+
         getDOMStrings: function () {
             return DOMStrings;
         }
@@ -291,6 +307,8 @@ var controller = (function (budgetCtrl, UICtrl) {
         });
 
         DOM.$container.addEventListener('click', crtlDeleteItem);
+
+        DOM.$inputType.addEventListener('change', UICtrl.changedType);
     };
 
     var updateBudget = function () {
