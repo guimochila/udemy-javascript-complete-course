@@ -11,14 +11,14 @@ var budgetController = (function () {
     };
 
     Expense.prototype.calcPercentage = function (totalIncome) {
-        if (totalIncome > 0){
+        if (totalIncome > 0) {
             this.percentage = Math.round((this.value / totalIncome) * 100);
         } else {
             this.percentage = -1;
-        }    
+        }
     };
 
-    Expense.prototype.getPercentage = function(){
+    Expense.prototype.getPercentage = function () {
         return this.percentage;
     }
 
@@ -154,6 +154,23 @@ var UIController = (function () {
         $container: document.querySelector('.container'),
     };
 
+    function formatNumber(num, type) {
+        var numSplit, int, dec;
+
+        num = Math.abs(num);
+        num = num.toFixed(2);
+        numSplit = num.split('.');
+        int = numSplit[0];
+
+        if (int.length > 3) {
+            int = int.substr(0, int.length - 3) + ',' + int.substr(int.length - 3, 3);
+        }
+
+        dec = numSplit[1];
+
+        return (type === 'exp' ? '-' : '+') + ' ' + int + '.' +  dec;
+    }
+
     return {
         getinput: function () {
             return {
@@ -178,7 +195,7 @@ var UIController = (function () {
             // Replace the placeholder text with data
             newHtml = html.replace('%id%', obj.id);
             newHtml = newHtml.replace('%description%', obj.description);
-            newHtml = newHtml.replace('%value%', obj.value);
+            newHtml = newHtml.replace('%value%', formatNumber(obj.value, type));
 
             // Insert the HTML into the DOM
             element.insertAdjacentHTML('beforeend', newHtml);
@@ -206,9 +223,13 @@ var UIController = (function () {
         },
 
         displayBudget: function (obj) {
-            DOMStrings.$budgetLabel.textContent = obj.budget;
-            DOMStrings.$incomeLabel.textContent = obj.totalInc;
-            DOMStrings.$expenseLabel.textContent = obj.totalExp;
+            var type;
+
+            obj.budget > 0 ? type = 'inc' : type = 'exp';
+
+            DOMStrings.$budgetLabel.textContent = formatNumber(obj.budget, type);
+            DOMStrings.$incomeLabel.textContent = formatNumber(obj.totalInc, 'inc');
+            DOMStrings.$expenseLabel.textContent = formatNumber(obj.totalExp, 'exp');
 
             if (obj.percentage > 0) {
                 DOMStrings.$percentageLabel.textContent = obj.percentage + '%';
@@ -220,15 +241,15 @@ var UIController = (function () {
         displayPercentage: function (percentages) {
 
             var fields = document.querySelectorAll('.item__percentage');
-    
-            var nodeListForEach = function(list, callback) {
+
+            var nodeListForEach = function (list, callback) {
                 for (var i = 0; i < list.length; i++) {
                     callback(list[i], i);
                 }
             };
 
-            nodeListForEach(fields, function(current, index){
-                if (percentages[index] > 0){
+            nodeListForEach(fields, function (current, index) {
+                if (percentages[index] > 0) {
                     current.textContent = percentages[index] + '%';
                 } else {
                     current.textContent = '---';
